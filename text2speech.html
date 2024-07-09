@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Form</title>
+    <style>
+        /* 添加一些基本的页面边距 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        /* 为输入框和按钮设置样式 */
+        .input-container {
+            width: 100%; /* 输入框宽度设为100% */
+            margin-bottom: 10px; /* 输入框和按钮之间的间距 */
+            /* margin-top: 10px; */
+        }
+
+        #titleField {
+            width: 80%; /* 输入框宽度设为100% */
+            padding: 10px; /* 输入框内边距 */
+            box-sizing: border-box; /* 边框计算在宽度内 */
+        }
+
+        #contentField {
+            width: 80%; /* 输入框宽度设为100% */
+            padding: 200px; /* 输入框内边距 */
+            box-sizing: border-box; /* 边框计算在宽度内 */
+        }
+
+        #submitButton {
+            display: block; /* 按钮作为块级元素显示 */
+            /* width: 100%;  按钮宽度设为100% */
+            padding: 10px;
+            margin-top: 20px; /* 按钮与输入框的间距 */
+        }
+
+        /* 用于显示响应的容器样式 */
+        #response {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function submitForm() {
+            var titleField = document.getElementById('titleField');
+            var contentField = document.getElementById('contentField');
+			var voiceField = document.getElementById('voiceId');
+            var responseDiv = document.getElementById('response');
+            var titleInput = titleField.value;
+            var contentInput = contentField.value;
+			var voiceInput = voiceField.value
+
+
+            // 创建 AJAX 请求
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    responseDiv.innerHTML = '【' + xhr.responseText + '】生成完毕！';
+                }
+            };
+            xhr.open('POST', 'http://192.168.31.56:8124/submit', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			var data = 'title=' + encodeURIComponent(titleInput) 
+			data = data + '&content=' + encodeURIComponent(contentInput)
+			data = data + '&voiceid=' + encodeURIComponent(voiceInput)
+            xhr.send(data);
+        }
+    </script>
+</head>
+<body>
+    <h1>文本 -> 妈妈的声音</h1>
+	<p>请选择一个声音模型：
+	<select id="voiceId">
+        <option value="voice-cd4964d">妈妈的声音2</option>
+        <option value="voice-001c648">妈妈的声音</option>
+    </select>
+	</p>
+    <input type="text" id="titleField" placeholder="请输入文件名{...}.mp3">
+    <p> </p>
+    <textarea type="text" id="contentField" placeholder="请输入正文..."> </textarea>
+    <button id="submitButton" onclick="submitForm()">提交</button>
+    <div id="response"></div>
+</body>
+</html>
